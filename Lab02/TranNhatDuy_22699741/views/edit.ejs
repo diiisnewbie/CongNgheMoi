@@ -1,0 +1,10 @@
+<h2>✏️ Sửa sản phẩm</h2>
+
+<form method="post" action="/edit/<%= product.id %>">
+    <input name="name" value="<%= product.name %>" required><br>
+    <input name="price" type="number" value="<%= product.price %>" required><br>
+    <input name="quantity" type="number" value="<%= product.quantity %>" required><br>
+    <button type="submit">Cập nhật</button>
+</form>
+
+<a href="/">⬅️ Quay lại</a>

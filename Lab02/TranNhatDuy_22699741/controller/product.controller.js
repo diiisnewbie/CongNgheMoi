@@ -1,4 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+
 const {
     ddb,
     ScanCommand,
@@ -7,20 +9,22 @@ const {
     UpdateCommand,
     DeleteCommand,
 } = require("../service/dynamodb");
+
 const { s3, PutObjectCommand, DeleteObjectCommand } = require("../service/s3");
-const fs = require("fs");
 
-const TABLE = "Products";
-const BUCKET = process.env.S3_BUCKET;
+const TABLE = process.env.DYNAMODB_TABLE;
+const BUCKET = process.env.S3_BUCKET_NAME;
 
-// READ
+// LIST
 exports.getAll = async (req, res) => {
     const data = await ddb.send(new ScanCommand({ TableName: TABLE }));
     res.render("index", { products: data.Items });
 };
 
-// CREATE FORM
-exports.showAdd = (req, res) => res.render("add");
+// ADD FORM
+exports.showAdd = (req, res) => {
+    res.render("add");
+};
 
 // CREATE
 exports.create = async (req, res) => {
@@ -38,7 +42,9 @@ exports.create = async (req, res) => {
         })
     );
 
-    const imageUrl = `https://${BUCKET}.s3.amazonaws.com/${s3Key}`;
+    fs.unlinkSync(file.path);
+
+    const imageUrl = `https://${BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`;
 
     await ddb.send(
         new PutCommand({
@@ -68,7 +74,7 @@ exports.showEdit = async (req, res) => {
     res.render("edit", { product: data.Item });
 };
 
-// UPDATE
+// UPDATE (không đổi ảnh)
 exports.update = async (req, res) => {
     await ddb.send(
         new UpdateCommand({
@@ -86,13 +92,30 @@ exports.update = async (req, res) => {
     res.redirect("/");
 };
 
-// DELETE
+// DELETE (xóa cả S3)
 exports.delete = async (req, res) => {
+    const data = await ddb.send(
+        new GetCommand({
+            TableName: TABLE,
+            Key: { id: req.params.id },
+        })
+    );
+
+    if (data.Item?.s3Key) {
+        await s3.send(
+            new DeleteObjectCommand({
+                Bucket: BUCKET,
+                Key: data.Item.s3Key,
+            })
+        );
+    }
+
     await ddb.send(
         new DeleteCommand({
             TableName: TABLE,
             Key: { id: req.params.id },
         })
     );
+
     res.redirect("/");
 };
