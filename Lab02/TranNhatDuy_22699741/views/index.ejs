@@ -125,8 +125,8 @@
           <td><%= p.price.toLocaleString() %> đ</td>
           <td><%= p.quantity %></td>
           <td class="actions">
-            <a class="edit" href="/edit/<%= p.product_id %>">✏️</a>
-            <a class="delete" href="/delete/<%= p.product_id %>"
+            <a class="edit" href="/edit/<%= p.id %>">✏️</a>
+            <a class="delete" href="/delete/<%= p.id %>"
                onclick="return confirm('Xóa sản phẩm này?')">🗑</a>
           </td>
         </tr>
