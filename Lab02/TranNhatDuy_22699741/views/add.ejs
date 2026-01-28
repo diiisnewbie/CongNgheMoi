@@ -1,11 +1,115 @@
-<h2>➕ Thêm sản phẩm</h2>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm sản phẩm</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            padding: 40px;
+        }
 
-<form method="post" action="/add" enctype="multipart/form-data">
-    <input name="name" placeholder="Tên" required><br>
-    <input name="price" type="number" placeholder="Giá" required><br>
-    <input name="quantity" type="number" placeholder="Số lượng" required><br>
-    <input type="file" name="image" required><br>
-    <button type="submit">Lưu</button>
-</form>
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
 
-<a href="/">⬅️ Quay lại</a>
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        input[type="file"] {
+            padding: 6px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76,175,80,0.15);
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 18px;
+            background: #4CAF50;
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #43a047;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #1976d2;
+            font-weight: bold;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>➕ Thêm sản phẩm</h2>
+
+    <form method="post" action="/add" enctype="multipart/form-data">
+
+        <label>Tên sản phẩm</label>
+        <input name="name" placeholder="Nhập tên sản phẩm" required>
+
+        <label>Giá (VNĐ)</label>
+        <input name="price" type="number" placeholder="Nhập giá" required>
+
+        <label>Số lượng</label>
+        <input name="quantity" type="number" placeholder="Nhập số lượng" required>
+
+        <label>Ảnh sản phẩm</label>
+        <input type="file" name="image" accept="image/*" required>
+
+        <div class="btn-group">
+            <a class="back" href="/">⬅️ Quay lại</a>
+            <button type="submit">💾 Lưu sản phẩm</button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,20 +1,139 @@
-<h2>Danh sách sản phẩm</h2>
-<a href="/add">➕ Thêm</a>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách sản phẩm</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      padding: 40px;
+    }
 
-<table border="1">
-  <tr>
-    <th>Ảnh</th><th>Tên</th><th>Giá</th><th>Số lượng</th><th>Hành động</th>
-  </tr>
-  <% products.forEach(p => { %>
-    <tr>
-      <td><img src="<%= p.url_image %>" width="80"></td>
-      <td><%= p.name %></td>
-      <td><%= p.price %></td>
-      <td><%= p.quantity %></td>
-      <td>
-        <a href="/edit/<%= p.id %>">✏️</a>
-        <a href="/delete/<%= p.id %>">🗑</a>
-      </td>
-    </tr>
-  <% }) %>
-</table>
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .add-btn {
+      display: inline-block;
+      margin-bottom: 15px;
+      padding: 10px 16px;
+      background: #4CAF50;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .add-btn:hover {
+      background: #43a047;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    th {
+      background: #1976d2;
+      color: #fff;
+      padding: 12px;
+      text-align: center;
+    }
+
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+      background: #f1f7ff;
+    }
+
+    img {
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .actions a {
+      margin: 0 6px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .edit {
+      color: #ff9800;
+    }
+
+    .delete {
+      color: #f44336;
+    }
+
+    .edit:hover {
+      color: #fb8c00;
+    }
+
+    .delete:hover {
+      color: #d32f2f;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>📦 Danh sách sản phẩm</h2>
+  <a class="add-btn" href="/add">➕ Thêm sản phẩm</a>
+
+  <% if (products.length === 0) { %>
+    <div class="empty">Chưa có sản phẩm nào</div>
+  <% } else { %>
+    <table>
+      <tr>
+        <th>Ảnh</th>
+        <th>Tên</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Hành động</th>
+      </tr>
+
+      <% products.forEach(p => { %>
+        <tr>
+          <td>
+            <img src="<%= p.url_image %>" width="80" height="80">
+          </td>
+          <td><%= p.name %></td>
+          <td><%= p.price.toLocaleString() %> đ</td>
+          <td><%= p.quantity %></td>
+          <td class="actions">
+            <a class="edit" href="/edit/<%= p.product_id %>">✏️</a>
+            <a class="delete" href="/delete/<%= p.product_id %>"
+               onclick="return confirm('Xóa sản phẩm này?')">🗑</a>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } %>
+</div>
+
+</body>
+</html>
