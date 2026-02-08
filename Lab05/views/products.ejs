@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-10">
+<div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow">
+
+    <h2 class="text-2xl font-bold mb-6 text-gray-700">📦 Product Management</h2>
+
+    <!-- ADD FORM -->
+    <form action="/products/add" method="POST" enctype="multipart/form-data"
+          class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+
+        <input name="name"
+               placeholder="Product name"
+               class="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+               required />
+
+        <input name="price" type="number"
+               placeholder="Price"
+               class="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+               required />
+
+        <input name="quantity" type="number"
+               placeholder="Quantity"
+               class="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400"
+               required />
+
+        <input type="file" name="image"
+               class="border rounded px-3 py-2 bg-white" />
+
+        <button
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded px-4 py-2">
+            ➕ Add
+        </button>
+    </form>
+
+    <!-- TABLE -->
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+            <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="p-3 text-left">Image</th>
+                <th class="p-3 text-left">Name</th>
+                <th class="p-3 text-left">Price</th>
+                <th class="p-3 text-left">Quantity</th>
+                <th class="p-3 text-left">Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <% products.forEach(p => { %>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-3">
+                        <% if (p.url_image) { %>
+                            <img src="<%= p.url_image %>"
+                                 class="w-20 h-20 object-cover rounded border"/>
+                        <% } else { %>
+                            <span class="text-gray-400 italic">No image</span>
+                        <% } %>
+                    </td>
+
+                    <td class="p-3 font-medium"><%= p.name %></td>
+                    <td class="p-3">$<%= p.price %></td>
+                    <td class="p-3"><%= p.quantity %></td>
+
+                    <td class="p-3 space-x-2">
+                        <a href="/products/edit/<%= p.id %>"
+                           class="text-blue-600 hover:underline font-semibold">
+                            Edit
+                        </a>
+
+                        <a href="/products/delete/<%= p.id %>"
+                           onclick="return confirm('Delete this product?')"
+                           class="text-red-600 hover:underline font-semibold">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

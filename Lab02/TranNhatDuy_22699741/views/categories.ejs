@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen p-10">
+<div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow">
+
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold mb-6 text-gray-700">📦 Category Management</h2>
+        <a href="/products"
+           class="bg-green-600 hover:bg-green-700 text-white font-semibold rounded px-4 py-2 mb-4 inline-block">
+            Manage Products
+        </a>
+    </div>
+
+    <!-- ADD FORM -->
+    <form action="/categories/add" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+
+        <input name="name" placeholder="Category name"
+               class="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400" required />
+
+        <input name="description" placeholder="Description"
+               class="border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-400" required />
+
+        <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded px-4 py-2">
+            ➕ Add
+        </button>
+    </form>
+
+    <!-- TABLE -->
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+            <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="p-3 text-left">Name</th>
+                <th class="p-3 text-left">Description</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <% categories.forEach(category=> { %>
+                <tr class="border-b hover:bg-gray-50">
+
+                    <td class="p-3 font-medium">
+                        <%= category.name %>
+                    </td>
+                    <td class="p-3">
+                        <%= category.description %>
+                    </td>
+
+                    <td class="p-3 space-x-2">
+                        <a href="/categories/edit/<%= category.categoryId %>"
+                           class="text-blue-600 hover:underline font-semibold">
+                            Edit
+                        </a>
+
+                        <a href="/categories/delete/<%= category.categoryId %>"
+                           onclick="return confirm('Delete this category?')"
+                           class="text-red-600 hover:underline font-semibold">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+
+</html>

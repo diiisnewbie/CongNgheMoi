@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ShopDB | Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      width: 380px;
+      background: white;
+      border-radius: 16px;
+      padding: 35px 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-card h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+      letter-spacing: 1px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      outline: none;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transition: 0.3s;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .footer-text {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+
+<form class="login-card" method="post" action="/login">
+  <h2>🔐 ShopDB Login</h2>
+
+  <div class="form-group">
+    <input name="username" placeholder="Username" required />
+  </div>
+
+  <div class="form-group">
+    <input name="password" type="password" placeholder="Password" required />
+  </div>
+
+  <button class="login-btn">LOGIN</button>
+
+  <div class="footer-text">
+    © 2026 ShopDB System
+  </div>
+</form>
+
+</body>
+</html>

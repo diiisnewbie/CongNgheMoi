@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Products</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen p-8">
+<div class="max-w-7xl mx-auto space-y-8">
+
+  <!-- HEADER -->
+  <div class="bg-white p-6 rounded-xl shadow flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <% if (user && user.role==='admin' ) { %>
+      <h2 class="text-2xl font-bold text-gray-700">📦 Product Management</h2>
+      <div class="flex gap-3">
+        <a href="/categories" class="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-4 py-2">
+          Manage Categories
+        </a>
+
+        <a href="/productLogs"
+           class="bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg px-4 py-2">
+          View Logs
+        </a>
+      </div>
+    <% } %>
+    <% if (user) { %>
+      <div class="flex items-center gap-2 ml-4">
+        <span class="text-sm text-gray-600">
+          👤 <%= user.username %>
+          <span class="ml-1 px-2 py-0.5 text-xs rounded-full
+            <%= user.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700' %>">
+            <%= user.role.toUpperCase() %>
+          </span>
+        </span>
+
+        <a href="/logout"
+           onclick="return confirm('Do you want to logout?')"
+           class="bg-gray-600 hover:bg-gray-700 text-white text-sm font-semibold rounded-lg px-3 py-2">
+          Logout
+        </a>
+      </div>
+    <% } %>
+
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="bg-blue-100 p-4 rounded-xl">
+      <p class="text-sm text-gray-600">Total Products</p>
+      <p class="text-2xl font-bold">
+        <%= totalCount %>
+      </p>
+    </div>
+    <div class="bg-green-100 p-4 rounded-xl">
+      <p class="text-sm text-gray-600">In Stock</p>
+      <p class="text-2xl font-bold">
+        <%= inStockCount %>
+      </p>
+    </div>
+    <div class="bg-yellow-100 p-4 rounded-xl">
+      <p class="text-sm text-gray-600">Low Stock</p>
+      <p class="text-2xl font-bold">
+        <%= lowStockCount %>
+      </p>
+    </div>
+    <div class="bg-red-100 p-4 rounded-xl">
+      <p class="text-sm text-gray-600">Out of Stock</p>
+      <p class="text-2xl font-bold">
+        <%= outStockCount %>
+      </p>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT -->
+
+  <% if (user && user.role==='admin' ) { %>
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h3 class="text-lg font-bold text-gray-700 mb-4">➕ Add New Product</h3>
+
+      <form action="/products/add" method="POST" enctype="multipart/form-data"
+            class="grid grid-cols-1 md:grid-cols-6 gap-4">
+
+        <input name="name" required placeholder="Product name" class="border rounded-lg px-3 py-2 col-span-2" />
+
+        <input name="price" type="number" required placeholder="Price" class="border rounded-lg px-3 py-2" />
+
+        <input name="quantity" type="number" required placeholder="Quantity" class="border rounded-lg px-3 py-2" />
+
+        <select name="categoryId" required class="border rounded-lg px-3 py-2 col-span-2">
+          <option value="">-- Category --</option>
+          <% categories.forEach(c=> { %>
+            <option value="<%= c.categoryId %>">
+              <%= c.name %>
+            </option>
+          <% }) %>
+        </select>
+
+        <input type="file" name="image" class="border rounded-lg px-3 py-2 bg-white col-span-2" />
+
+        <input type="hidden" name="isDeleted" value="false" />
+
+        <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-2 col-span-1">
+          Add
+        </button>
+      </form>
+    </div>
+  <% } %>
+
+  <!-- SEARCH & FILTER -->
+  <div class="bg-white p-6 rounded-xl shadow">
+    <form method="GET" action="/products" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+
+      <input name="search" value="<%= query.search || '' %>" placeholder="🔍 Search product name"
+             class="border rounded-lg px-3 py-2" />
+
+      <select name="categoryId" class="border rounded-lg px-3 py-2">
+        <option value="">All Categories</option>
+        <% categories.forEach(c=> { %>
+          <option value="<%= c.categoryId %>" <%=query.categoryId==c.categoryId ? 'selected' : '' %>>
+            <%= c.name %>
+          </option>
+        <% }) %>
+      </select>
+
+      <input type="number" name="minPrice" value="<%= query.minPrice || '' %>" placeholder="Min price"
+             class="border rounded-lg px-3 py-2" />
+
+      <input type="number" name="maxPrice" value="<%= query.maxPrice || '' %>" placeholder="Max price"
+             class="border rounded-lg px-3 py-2" />
+
+      <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 font-semibold">
+        Filter
+      </button>
+    </form>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white rounded-xl shadow overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+      <tr class="bg-gray-200 text-gray-700">
+        <th class="p-3">Image</th>
+        <th class="p-3">Name</th>
+        <th class="p-3">Price</th>
+        <th class="p-3">Qty</th>
+        <th class="p-3">Status</th>
+        <th class="p-3">Category</th>
+        <th class="p-3">Action</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% products.forEach(p=> {
+        let statusText='', statusClass='', rowClass='';
+        if (p.quantity === 0) {
+          statusText='Out of stock'; statusClass='bg-red-500'; rowClass='bg-red-50';
+        } else if (p.quantity < 5) { statusText='Low stock' ; statusClass='bg-yellow-500' ;
+          rowClass='bg-yellow-50' ; } else { statusText='In stock' ; statusClass='bg-green-500' ; } %>
+
+      <tr class="border-b hover:bg-gray-50 <%= rowClass %>">
+        <td class="p-3">
+          <% if (p.url_image) { %>
+            <img src="<%= p.url_image %>" class="w-16 h-16 rounded object-cover border" />
+          <% } else { %>
+            <span class="text-gray-400 italic">No image</span>
+          <% } %>
+        </td>
+
+        <td class="p-3 font-medium">
+          <%= p.name %>
+        </td>
+        <td class="p-3">$<%= p.price %>
+        </td>
+        <td class="p-3 font-semibold">
+          <%= p.quantity %>
+        </td>
+
+        <td class="p-3">
+                      <span class="text-white px-3 py-1 rounded-full text-sm <%= statusClass %>">
+                        <%= statusText %>
+                      </span>
+        </td>
+
+        <td class="p-3">
+          <% categories.forEach(c=> { if (c.categoryId === p.categoryId) { %>
+            <%= c.name %>
+          <% } }) %>
+        </td>
+
+        <td class="p-3 space-x-2">
+          <a href="/products/edit/<%= p.id %>" class="text-blue-600 hover:underline font-semibold">Edit</a>
+          <a href="/products/delete/<%= p.id %>" onclick="return confirm('Delete this product?')"
+             class="text-red-600 hover:underline font-semibold">Delete</a>
+        </td>
+      </tr>
+
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="flex justify-center items-center gap-2">
+    <% if (currentPage> 1) { %>
+      <a href="?<%= new URLSearchParams({...query, page: currentPage - 1}) %>"
+         class="px-3 py-1 border rounded hover:bg-gray-200">Prev</a>
+    <% } %>
+
+    <% for (let i=1;i<=totalPages;i++){ %>
+      <a href="?<%= new URLSearchParams({...query, page: i}) %>" class="px-3 py-1 border rounded
+          <%= i === currentPage ? 'bg-blue-600 text-white' : 'hover:bg-gray-200' %>">
+        <%= i %>
+      </a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <a href="?<%= new URLSearchParams({...query, page: currentPage + 1}) %>"
+         class="px-3 py-1 border rounded hover:bg-gray-200">Next</a>
+    <% } %>
+  </div>
+
+</div>
+</body>
+
+</html>

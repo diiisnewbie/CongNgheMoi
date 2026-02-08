@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product Logs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen p-10">
+<div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow">
+
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold mb-6 text-gray-700">📦 Product Logs</h2>
+        <a href="/products"
+           class="bg-green-600 hover:bg-green-700 text-white font-semibold rounded px-4 py-2 mb-4 inline-block">
+            Manage Products
+        </a>
+    </div>
+
+
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+            <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="p-3 text-left">Product ID</th>
+                <th class="p-3 text-left">Action</th>
+                <th class="p-3 text-left">User ID</th>
+                <th class="p-3 text-left">Time</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <% productLogs.forEach(log=> { %>
+                <tr class="border-b hover:bg-gray-50">
+
+                    <td class="p-3 font-medium">
+                        <%= log.productId %>
+                    </td>
+                    <td class="p-3">
+                        <%= log.action %>
+                    </td>
+                    <td class="p-3">
+                        <%= log.userId %>
+                    </td>
+                    <td class="p-3">
+                        <%= log.time %>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+
+</html>
