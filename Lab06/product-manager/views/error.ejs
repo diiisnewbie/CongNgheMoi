@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lỗi | ShopManager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="nav-brand"><span class="brand-icon">◈</span><span>ShopManager</span></a>
+  </nav>
+  <main class="main-content">
+    <div class="empty-state" style="padding: 80px 20px;">
+      <div class="empty-icon" style="font-size:5rem;">⚠️</div>
+      <h3 style="font-size:2rem;">Đã xảy ra lỗi</h3>
+      <p><%= message || 'Lỗi không xác định' %></p>
+      <a href="/" class="btn btn-primary">← Về trang chủ</a>
+    </div>
+  </main>
+</body>
+</html>

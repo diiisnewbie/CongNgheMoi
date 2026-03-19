@@ -1,0 +1,144 @@
+<%
+  // Inline layout for EJS without express-ejs-layouts
+  const body_content = ``;
+%>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | ShopManager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <%- include('../partials/flash') %>
+
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <span class="brand-icon">◈</span>
+      <span>ShopManager</span>
+    </a>
+    <div class="nav-actions">
+      <a href="/" class="nav-link active">Sản phẩm</a>
+      <a href="/products/new" class="btn btn-primary">+ Thêm mới</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-left">
+        <h1 class="page-title">Danh Sách Sản Phẩm</h1>
+        <p class="page-subtitle"><%= products.length %> sản phẩm<%= search ? ` khớp với "${search}"` : '' %></p>
+      </div>
+      <div class="page-header-right">
+        <form action="/" method="GET" class="search-form">
+          <div class="search-input-wrap">
+            <span class="search-icon">⌕</span>
+            <input
+              type="text"
+              name="search"
+              value="<%= search %>"
+              placeholder="Tìm kiếm sản phẩm..."
+              class="search-input"
+              autocomplete="off"
+            />
+            <% if (search) { %>
+              <a href="/" class="search-clear">×</a>
+            <% } %>
+          </div>
+          <button type="submit" class="btn btn-search">Tìm</button>
+        </form>
+      </div>
+    </div>
+
+    <% if (products.length === 0) { %>
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3>Không có sản phẩm nào</h3>
+        <p><%= search ? `Không tìm thấy sản phẩm với từ khóa "${search}"` : 'Hãy thêm sản phẩm đầu tiên của bạn!' %></p>
+        <% if (!search) { %>
+          <a href="/products/new" class="btn btn-primary">+ Thêm sản phẩm</a>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div class="table-wrapper">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th class="th-img">Hình ảnh</th>
+              <th>Tên sản phẩm</th>
+              <th class="th-price">Giá</th>
+              <th class="th-stock">Tồn kho</th>
+              <th class="th-actions">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% products.forEach((product, index) => { %>
+              <tr class="product-row" style="animation-delay: <%= index * 0.04 %>s">
+                <td class="td-img">
+                  <div class="product-img-wrap">
+                    <% if (product.url_image) { %>
+                      <img src="<%= product.url_image %>" alt="<%= product.name %>" class="product-thumbnail" onerror="this.src='/img/no-image.png'; this.onerror=null;" />
+                    <% } else { %>
+                      <div class="no-image-thumb">📷</div>
+                    <% } %>
+                  </div>
+                </td>
+                <td class="td-name">
+                  <div class="product-name"><%= product.name %></div>
+                  <% if (product.description) { %>
+                    <div class="product-desc"><%= product.description.substring(0, 60) %><%= product.description.length > 60 ? '...' : '' %></div>
+                  <% } %>
+                </td>
+                <td class="td-price">
+                  <span class="price-badge"><%= Number(product.price).toLocaleString('vi-VN') %>₫</span>
+                </td>
+                <td class="td-stock">
+                  <span class="stock-badge <%= product.unit_in_stock === 0 ? 'out-of-stock' : product.unit_in_stock < 10 ? 'low-stock' : 'in-stock' %>">
+                    <%= product.unit_in_stock %>
+                  </span>
+                </td>
+                <td class="td-actions">
+                  <div class="action-group">
+                    <a href="/products/<%= product.id %>" class="btn-icon btn-view" title="Xem chi tiết">👁</a>
+                    <a href="/products/<%= product.id %>/edit" class="btn-icon btn-edit" title="Chỉnh sửa">✎</a>
+                    <button
+                      class="btn-icon btn-delete"
+                      title="Xóa"
+                      onclick="confirmDelete('<%= product.id %>', '<%= product.name.replace(/'/g, "\\'") %>')"
+                    >✕</button>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </main>
+
+  <!-- Delete confirm modal -->
+  <div id="deleteModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-icon">🗑️</div>
+      <h3 class="modal-title">Xác nhận xóa</h3>
+      <p class="modal-text">Bạn có chắc muốn xóa sản phẩm <strong id="deleteProductName"></strong>?<br/>Hành động này không thể hoàn tác.</p>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeModal()">Hủy</button>
+        <form id="deleteForm" method="POST" style="display:inline;">
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" class="btn btn-danger">Xóa</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2024 ShopManager — Node.js + Express + DynamoDB Local</p>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
